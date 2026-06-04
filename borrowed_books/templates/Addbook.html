@@ -1,0 +1,521 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block content %}
+<h1>Add Book</h1>
+
+<!--  <style>-->
+<!--    /* ── Design tokens ───────────────────────────────────────── */-->
+<!--    :root {-->
+<!--      &#45;&#45;ink:      #12100e;-->
+<!--      &#45;&#45;paper:    #faf7f2;-->
+<!--      &#45;&#45;cream:    #f0ebe2;-->
+<!--      &#45;&#45;rust:     #c0392b;-->
+<!--      &#45;&#45;rust-lt:  #e74c3c;-->
+<!--      &#45;&#45;gold:     #d4a843;-->
+<!--      &#45;&#45;muted:    #7a7067;-->
+<!--      &#45;&#45;border:   #ddd5c8;-->
+<!--      &#45;&#45;radius:   10px;-->
+<!--      &#45;&#45;shadow:   0 4px 24px rgba(18,16,14,.10);-->
+<!--      &#45;&#45;card-w:   240px;-->
+<!--    }-->
+
+<!--    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }-->
+
+<!--    body {-->
+<!--      font-family: 'DM Sans', sans-serif;-->
+<!--      background: var(&#45;&#45;paper);-->
+<!--      color: var(&#45;&#45;ink);-->
+<!--      min-height: 100vh;-->
+<!--    }-->
+
+<!--    /* ── Header ─────────────────────────────────────────────── */-->
+<!--    header {-->
+<!--      background: var(&#45;&#45;ink);-->
+<!--      color: var(&#45;&#45;paper);-->
+<!--      padding: 28px 48px;-->
+<!--      display: flex;-->
+<!--      align-items: baseline;-->
+<!--      gap: 14px;-->
+<!--    }-->
+<!--    header h1 {-->
+<!--      font-family: 'Playfair Display', serif;-->
+<!--      font-size: 2rem;-->
+<!--      letter-spacing: -.5px;-->
+<!--    }-->
+<!--    header span {-->
+<!--      font-size: .85rem;-->
+<!--      color: var(&#45;&#45;gold);-->
+<!--      letter-spacing: 2px;-->
+<!--      text-transform: uppercase;-->
+<!--      font-weight: 500;-->
+<!--    }-->
+
+<!--    /* ── Layout ──────────────────────────────────────────────── */-->
+<!--    main { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }-->
+
+<!--    /* ── Form card ───────────────────────────────────────────── */-->
+<!--    .form-card {-->
+<!--      background: #fff;-->
+<!--      border: 1px solid var(&#45;&#45;border);-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      padding: 36px 40px;-->
+<!--      box-shadow: var(&#45;&#45;shadow);-->
+<!--      margin-bottom: 60px;-->
+<!--    }-->
+<!--    .form-card h2 {-->
+<!--      font-family: 'Playfair Display', serif;-->
+<!--      font-size: 1.45rem;-->
+<!--      margin-bottom: 28px;-->
+<!--      padding-bottom: 14px;-->
+<!--      border-bottom: 2px solid var(&#45;&#45;cream);-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      gap: 10px;-->
+<!--    }-->
+<!--    .form-card h2 .icon {-->
+<!--      width: 30px; height: 30px;-->
+<!--      background: var(&#45;&#45;rust);-->
+<!--      border-radius: 6px;-->
+<!--      display: grid; place-items: center;-->
+<!--      font-size: 14px; color: #fff;-->
+<!--    }-->
+
+<!--    .form-grid {-->
+<!--      display: grid;-->
+<!--      grid-template-columns: 1fr 1fr;-->
+<!--      gap: 18px 24px;-->
+<!--    }-->
+<!--    .form-grid .full { grid-column: 1 / -1; }-->
+
+<!--    label {-->
+<!--      display: block;-->
+<!--      font-size: .78rem;-->
+<!--      font-weight: 500;-->
+<!--      letter-spacing: .8px;-->
+<!--      text-transform: uppercase;-->
+<!--      color: var(&#45;&#45;muted);-->
+<!--      margin-bottom: 6px;-->
+<!--    }-->
+<!--    input, select, textarea {-->
+<!--      width: 100%;-->
+<!--      padding: 10px 14px;-->
+<!--      border: 1.5px solid var(&#45;&#45;border);-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      font-family: 'DM Sans', sans-serif;-->
+<!--      font-size: .95rem;-->
+<!--      background: var(&#45;&#45;paper);-->
+<!--      color: var(&#45;&#45;ink);-->
+<!--      transition: border-color .2s, box-shadow .2s;-->
+<!--      outline: none;-->
+<!--    }-->
+<!--    input:focus, select:focus, textarea:focus {-->
+<!--      border-color: var(&#45;&#45;rust);-->
+<!--      box-shadow: 0 0 0 3px rgba(192,57,43,.12);-->
+<!--      background: #fff;-->
+<!--    }-->
+<!--    textarea { resize: vertical; min-height: 80px; }-->
+<!--    .errorlist { color: var(&#45;&#45;rust-lt); font-size: .82rem; margin-top: 4px; list-style: none; }-->
+
+<!--    .form-actions { margin-top: 26px; display: flex; gap: 12px; }-->
+<!--    .btn-primary {-->
+<!--      background: var(&#45;&#45;rust);-->
+<!--      color: #fff;-->
+<!--      border: none;-->
+<!--      padding: 12px 30px;-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      font-family: 'DM Sans', sans-serif;-->
+<!--      font-size: .95rem;-->
+<!--      font-weight: 500;-->
+<!--      cursor: pointer;-->
+<!--      letter-spacing: .3px;-->
+<!--      transition: background .2s, transform .1s;-->
+<!--    }-->
+<!--    .btn-primary:hover { background: var(&#45;&#45;rust-lt); }-->
+<!--    .btn-primary:active { transform: scale(.98); }-->
+<!--    .btn-secondary {-->
+<!--      background: transparent;-->
+<!--      color: var(&#45;&#45;muted);-->
+<!--      border: 1.5px solid var(&#45;&#45;border);-->
+<!--      padding: 12px 22px;-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      font-family: 'DM Sans', sans-serif;-->
+<!--      font-size: .95rem;-->
+<!--      cursor: pointer;-->
+<!--      transition: border-color .2s, color .2s;-->
+<!--    }-->
+<!--    .btn-secondary:hover { border-color: var(&#45;&#45;muted); color: var(&#45;&#45;ink); }-->
+
+<!--    /* ── Success toast ───────────────────────────────────────── */-->
+<!--    .toast {-->
+<!--      background: #1a7f4b;-->
+<!--      color: #fff;-->
+<!--      padding: 12px 20px;-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      font-size: .9rem;-->
+<!--      margin-bottom: 20px;-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      gap: 8px;-->
+<!--      animation: slideIn .3s ease;-->
+<!--    }-->
+<!--    @keyframes slideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }-->
+
+<!--    /* ── Section heading ─────────────────────────────────────── */-->
+<!--    .section-header {-->
+<!--      display: flex;-->
+<!--      align-items: baseline;-->
+<!--      gap: 12px;-->
+<!--      margin-bottom: 22px;-->
+<!--    }-->
+<!--    .section-header h2 {-->
+<!--      font-family: 'Playfair Display', serif;-->
+<!--      font-size: 1.45rem;-->
+<!--    }-->
+<!--    .section-header .count {-->
+<!--      background: var(&#45;&#45;ink);-->
+<!--      color: var(&#45;&#45;gold);-->
+<!--      font-size: .75rem;-->
+<!--      font-weight: 700;-->
+<!--      letter-spacing: 1px;-->
+<!--      padding: 3px 10px;-->
+<!--      border-radius: 20px;-->
+<!--    }-->
+
+<!--    /* ── Lazy row (horizontal scroll) ───────────────────────── */-->
+<!--    /*-->
+<!--      This mimics a mobile LazyRow / horizontal RecyclerView:-->
+<!--      - overflow-x: auto → only the row scrolls horizontally-->
+<!--      - display: flex with nowrap → cards lay out in a single line-->
+<!--      - scroll-snap → each card snaps neatly-->
+<!--      - The scrollbar is hidden visually but still functional-->
+<!--    */-->
+<!--    .lazy-row-wrapper {-->
+<!--      position: relative;-->
+<!--    }-->
+<!--    /* Fade hints at the edges so user knows more cards exist */-->
+<!--    .lazy-row-wrapper::after {-->
+<!--      content: '';-->
+<!--      position: absolute;-->
+<!--      top: 0; right: 0;-->
+<!--      width: 60px; height: 100%;-->
+<!--      background: linear-gradient(to right, transparent, var(&#45;&#45;paper));-->
+<!--      pointer-events: none;-->
+<!--      border-radius: 0 var(&#45;&#45;radius) var(&#45;&#45;radius) 0;-->
+<!--    }-->
+
+<!--    .lazy-row {-->
+<!--      display: flex;-->
+<!--      gap: 18px;-->
+<!--      overflow-x: auto;-->
+<!--      scroll-snap-type: x mandatory;-->
+<!--      -webkit-overflow-scrolling: touch;   /* smooth on iOS */-->
+<!--      padding-bottom: 14px;                /* room for scrollbar */-->
+<!--      scrollbar-width: thin;-->
+<!--      scrollbar-color: var(&#45;&#45;border) transparent;-->
+<!--    }-->
+<!--    .lazy-row::-webkit-scrollbar { height: 5px; }-->
+<!--    .lazy-row::-webkit-scrollbar-track { background: transparent; }-->
+<!--    .lazy-row::-webkit-scrollbar-thumb { background: var(&#45;&#45;border); border-radius: 4px; }-->
+
+<!--    /* ── Book card ───────────────────────────────────────────── */-->
+<!--    .book-card {-->
+<!--      flex: 0 0 var(&#45;&#45;card-w);            /* fixed width, never shrinks */-->
+<!--      scroll-snap-align: start;           /* snaps on scroll */-->
+<!--      background: #fff;-->
+<!--      border: 1px solid var(&#45;&#45;border);-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--      padding: 20px 18px 16px;-->
+<!--      box-shadow: var(&#45;&#45;shadow);-->
+<!--      display: flex;-->
+<!--      flex-direction: column;-->
+<!--      gap: 8px;-->
+<!--      transition: transform .2s, box-shadow .2s;-->
+<!--      animation: cardIn .4s ease both;-->
+<!--    }-->
+<!--    /* Staggered entrance animations */-->
+<!--    .book-card:nth-child(1)  { animation-delay: .05s; }-->
+<!--    .book-card:nth-child(2)  { animation-delay: .10s; }-->
+<!--    .book-card:nth-child(3)  { animation-delay: .15s; }-->
+<!--    .book-card:nth-child(4)  { animation-delay: .20s; }-->
+<!--    .book-card:nth-child(5)  { animation-delay: .25s; }-->
+<!--    .book-card:nth-child(n+6){ animation-delay: .30s; }-->
+
+<!--    @keyframes cardIn {-->
+<!--      from { opacity: 0; transform: translateY(10px); }-->
+<!--      to   { opacity: 1; transform: none; }-->
+<!--    }-->
+<!--    .book-card:hover {-->
+<!--      transform: translateY(-4px);-->
+<!--      box-shadow: 0 8px 32px rgba(18,16,14,.15);-->
+<!--    }-->
+
+<!--    /* Coloured spine strip at top — colour varies by genre */-->
+<!--    .card-spine {-->
+<!--      height: 4px;-->
+<!--      border-radius: 3px;-->
+<!--      margin-bottom: 4px;-->
+<!--    }-->
+<!--    .genre-fiction      { background: #3498db; }-->
+<!--    .genre-non_fiction  { background: #2ecc71; }-->
+<!--    .genre-science      { background: #9b59b6; }-->
+<!--    .genre-history      { background: #e67e22; }-->
+<!--    .genre-biography    { background: #1abc9c; }-->
+<!--    .genre-technology   { background: #2980b9; }-->
+<!--    .genre-arts         { background: #e91e8c; }-->
+<!--    .genre-other        { background: var(&#45;&#45;gold); }-->
+
+<!--    .card-genre {-->
+<!--      font-size: .68rem;-->
+<!--      font-weight: 600;-->
+<!--      letter-spacing: 1.2px;-->
+<!--      text-transform: uppercase;-->
+<!--      color: var(&#45;&#45;muted);-->
+<!--    }-->
+<!--    .card-title {-->
+<!--      font-family: 'Playfair Display', serif;-->
+<!--      font-size: 1rem;-->
+<!--      font-weight: 700;-->
+<!--      line-height: 1.3;-->
+<!--      color: var(&#45;&#45;ink);-->
+<!--      /* clamp to 2 lines */-->
+<!--      display: -webkit-box;-->
+<!--      -webkit-line-clamp: 2;-->
+<!--      -webkit-box-orient: vertical;-->
+<!--      overflow: hidden;-->
+<!--    }-->
+<!--    .card-author {-->
+<!--      font-size: .82rem;-->
+<!--      color: var(&#45;&#45;muted);-->
+<!--      font-style: italic;-->
+<!--    }-->
+<!--    .card-desc {-->
+<!--      font-size: .8rem;-->
+<!--      color: #555;-->
+<!--      line-height: 1.45;-->
+<!--      display: -webkit-box;-->
+<!--      -webkit-line-clamp: 3;-->
+<!--      -webkit-box-orient: vertical;-->
+<!--      overflow: hidden;-->
+<!--      flex: 1;-->
+<!--    }-->
+<!--    .card-meta {-->
+<!--      display: flex;-->
+<!--      justify-content: space-between;-->
+<!--      align-items: center;-->
+<!--      margin-top: auto;-->
+<!--      padding-top: 10px;-->
+<!--      border-top: 1px solid var(&#45;&#45;cream);-->
+<!--    }-->
+<!--    .card-year { font-size: .78rem; color: var(&#45;&#45;muted); }-->
+<!--    .card-copies {-->
+<!--      font-size: .75rem;-->
+<!--      font-weight: 600;-->
+<!--      padding: 3px 9px;-->
+<!--      border-radius: 20px;-->
+<!--      background: var(&#45;&#45;cream);-->
+<!--      color: var(&#45;&#45;ink);-->
+<!--    }-->
+<!--    .card-copies.low { background: #fdecea; color: var(&#45;&#45;rust); }-->
+
+<!--    /* ── Empty state ─────────────────────────────────────────── */-->
+<!--    .empty-state {-->
+<!--      text-align: center;-->
+<!--      padding: 48px 24px;-->
+<!--      color: var(&#45;&#45;muted);-->
+<!--      border: 2px dashed var(&#45;&#45;border);-->
+<!--      border-radius: var(&#45;&#45;radius);-->
+<!--    }-->
+<!--    .empty-state svg { margin-bottom: 16px; opacity: .4; }-->
+<!--    .empty-state p { font-size: .95rem; }-->
+
+<!--    /* ── Responsive ──────────────────────────────────────────── */-->
+<!--    @media (max-width: 600px) {-->
+<!--      header { padding: 20px 20px; }-->
+<!--      main { padding: 28px 16px 60px; }-->
+<!--      .form-card { padding: 24px 20px; }-->
+<!--      .form-grid { grid-template-columns: 1fr; }-->
+<!--      .form-grid .full { grid-column: 1; }-->
+<!--      :root { &#45;&#45;card-w: 200px; }-->
+<!--    }-->
+<!--  </style>-->
+
+
+
+
+
+
+<!--  <div class="section-header">-->
+<!--    <h2>Book Catalogue</h2>-->
+<!--    <span class="count">{{ books.count }} book{{ books.count|pluralize }}</span>-->
+<!--  </div>-->
+
+<!--  {% if books %}-->
+<!--    <div class="lazy-row-wrapper">-->
+<!--      <div class="lazy-row">-->
+<!--        {% for book in books %}-->
+<!--          <div class="book-card">-->
+<!--            <div class="card-spine genre-{{ book.genre }}"></div>-->
+<!--            <div class="card-genre">{{ book.get_genre_display }}</div>-->
+<!--            <div class="card-title">{{ book.title }}</div>-->
+<!--            <div class="card-author">{{ book.author }}</div>-->
+<!--            {% if book.description %}-->
+<!--              <div class="card-desc">{{ book.description }}</div>-->
+<!--            {% endif %}-->
+<!--            <div class="card-meta">-->
+<!--              <span class="card-year">{{ book.published_year }}</span>-->
+<!--              <span class="card-copies {% if book.copies_available <= 2 %}low{% endif %}">-->
+<!--                {{ book.copies_available }} cop{{ book.copies_available|pluralize:"y,ies" }}-->
+<!--              </span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        {% endfor %}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  {% else %}-->
+<!--    <div class="empty-state">-->
+<!--      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">-->
+<!--        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"-->
+<!--          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477-->
+<!--             5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0-->
+<!--             3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>-->
+<!--      </svg>-->
+<!--      <p>No books yet — add your first one above!</p>-->
+<!--    </div>-->
+<!--  {% endif %}-->
+
+
+
+
+
+
+
+
+<header>
+  <h1>📚 Denis Library System</h1>
+  <span>Book Registry</span>
+</header>
+
+<main>
+
+  <!-- ── Add Book Form ─────────────────────────────────────── -->
+  <div class="form-card">
+    <h2>
+      <span class="icon">＋</span>
+      Add New Book
+    </h2>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="toast">✓ {{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      <div class="form-grid">
+
+        <div>
+          <label for="{{ form.title.id_for_label }}">Title</label>
+          {{ form.title }}
+          {{ form.title.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.author.id_for_label }}">Author</label>
+          {{ form.author }}
+          {{ form.author.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.isbn.id_for_label }}">ISBN</label>
+          {{ form.isbn }}
+          {{ form.isbn.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.genre.id_for_label }}">Genre</label>
+          {{ form.genre }}
+          {{ form.genre.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.published_year.id_for_label }}">Published Year</label>
+          {{ form.published_year }}
+          {{ form.published_year.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.copies_available.id_for_label }}">Copies Available</label>
+          {{ form.copies_available }}
+          {{ form.copies_available.errors }}
+        </div>
+
+        <div class="full">
+          <label for="{{ form.description.id_for_label }}">Description <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Save Book</button>
+        <button type="reset" class="btn-secondary">Clear</button>
+      </div>
+    </form>
+  </div>
+
+<!--  &lt;!&ndash; ── Book Catalogue (Lazy Row) ─────────────────────────── &ndash;&gt;-->
+<!--  <div class="section-header">-->
+<!--    <h2>Book Catalogue</h2>-->
+<!--    <span class="count">{{ books.count }} book{{ books.count|pluralize }}</span>-->
+<!--  </div>-->
+
+<!--  {% if books %}-->
+<!--    <div class="lazy-row-wrapper">-->
+<!--      <div class="lazy-row">-->
+<!--        {% for book in books %}-->
+<!--          <div class="book-card">-->
+<!--            <div class="card-spine genre-{{ book.genre }}"></div>-->
+<!--            <div class="card-genre">{{ book.get_genre_display }}</div>-->
+<!--            <div class="card-title">{{ book.title }}</div>-->
+<!--            <div class="card-author">{{ book.author }}</div>-->
+<!--            {% if book.description %}-->
+<!--              <div class="card-desc">{{ book.description }}</div>-->
+<!--            {% endif %}-->
+<!--            <div class="card-meta">-->
+<!--              <span class="card-year">{{ book.published_year }}</span>-->
+<!--              <span class="card-copies {% if book.copies_available <= 2 %}low{% endif %}">-->
+<!--                {{ book.copies_available }} cop{{ book.copies_available|pluralize:"y,ies" }}-->
+<!--              </span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        {% endfor %}-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  {% else %}-->
+<!--    <div class="empty-state">-->
+<!--      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">-->
+<!--        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"-->
+<!--          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477-->
+<!--             5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0-->
+<!--             3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>-->
+<!--      </svg>-->
+<!--      <p>No books yet — add your first one above!</p>-->
+<!--    </div>-->
+<!--  {% endif %}-->
+
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

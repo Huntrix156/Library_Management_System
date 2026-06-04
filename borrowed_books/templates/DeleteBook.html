@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Delete {{ book.title }}{% endblock %}
+{% block content %}
+
+<style>
+  .confirm-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--rust);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    box-shadow: var(--shadow);
+    max-width: 520px;
+  }
+  .confirm-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    margin-bottom: 10px;
+    color: var(--rust);
+  }
+  .confirm-card p {
+    color: var(--muted);
+    font-size: .93rem;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  .confirm-card .book-name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .confirm-actions { display: flex; gap: 12px; margin-top: 28px; }
+  .btn-confirm-del {
+    background: var(--rust);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: var(--radius);
+    font-size: .95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-confirm-del:hover { background: var(--rust-lt); }
+  .btn-cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    padding: 12px 22px;
+    border-radius: var(--radius);
+    font-size: .95rem;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-cancel:hover { border-color: var(--muted); color: var(--ink); }
+</style>
+
+<main>
+  <div class="confirm-card">
+    <h2>⚠️ Delete Book?</h2>
+    <p>You are about to permanently delete:</p>
+    <p class="book-name">{{ book.title }} — {{ book.author }}</p>
+    <p>This action <strong>cannot be undone</strong>.</p>
+
+    <div class="confirm-actions">
+      <form method="POST" style="display:contents;">
+        {% csrf_token %}
+        {# DELETE confirm button #}
+        <button type="submit" class="btn-confirm-del">🗑 Yes, Delete</button>
+      </form>
+      {# Cancel — go back to detail page #}
+      <a href="{% url 'BookDetail' book.pk %}" class="btn-cancel">Cancel</a>
+    </div>
+  </div>
+</main>
+{% endblock %}

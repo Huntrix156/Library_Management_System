@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .auth-wrap { max-width: 460px; margin: 72px auto 80px; }
+  .auth-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:40px 44px; box-shadow:var(--shadow); }
+  .auth-card h2 { font-family:'Playfair Display',serif; font-size:1.55rem; margin-bottom:6px; }
+  .auth-card .sub { color:var(--muted); font-size:.9rem; margin-bottom:28px; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:.75rem; font-weight:500; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .form-input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.95rem; background:var(--paper); color:var(--ink); transition:border-color .2s,box-shadow .2s; outline:none; }
+  .form-input:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(192,57,43,.12); background:#fff; }
+  .errorlist { color:var(--rust-lt); font-size:.8rem; margin-top:4px; list-style:none; padding:0; }
+  .non-field-errors { background:#fdecea; border:1px solid #f5c6cb; border-radius:var(--radius); padding:10px 14px; margin-bottom:16px; color:var(--rust); font-size:.88rem; }
+  .btn-auth { width:100%; background:var(--rust); color:#fff; border:none; padding:13px; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; cursor:pointer; margin-top:8px; transition:background .2s; }
+  .btn-auth:hover { background:var(--rust-lt); }
+  .auth-footer { text-align:center; margin-top:20px; font-size:.88rem; color:var(--muted); }
+  .auth-footer a { color:var(--rust); text-decoration:none; font-weight:500; }
+  .role-pills { display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+  .pill { font-size:.7rem; font-weight:600; letter-spacing:.8px; text-transform:uppercase; padding:4px 12px; border-radius:20px; }
+  .pill-admin { background:#fdecea; color:var(--rust); }
+  .pill-lib   { background:#fff3cd; color:#856404; }
+  .pill-mem   { background:#d1ecf1; color:#0c5460; }
+</style>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="role-pills">
+      <span class="pill pill-admin">Admin</span>
+      <span class="pill pill-lib">Librarian</span>
+      <span class="pill pill-mem">Member</span>
+    </div>
+    <h2>Welcome Back</h2>
+    <p class="sub">Sign in to access your dashboard.</p>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="toast">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+      <div class="non-field-errors">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+
+      <button type="submit" class="btn-auth">Sign In</button>
+    </form>
+
+    <div class="auth-footer">
+      New to Denis Library? <a href="{% url 'register' %}">Create an account</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

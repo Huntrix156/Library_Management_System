@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% block title %}Lend — {{ book.title }}{% endblock %}
+{% block content %}
+
+<style>
+  main { max-width: 960px; }
+
+  /* ── two-column layout: form | book info ── */
+  .lend-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 720px) { .lend-layout { grid-template-columns: 1fr; } }
+
+  /* ── info panel on the right ── */
+  .book-info-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+  }
+  .book-info-panel h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--cream);
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream);
+    font-size: .88rem;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .lbl { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .7px; }
+  .info-row .val { font-weight: 600; color: var(--ink); }
+  .copies-big {
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--rust);
+    text-align: center;
+    padding: 12px 0 4px;
+  }
+  .copies-label { text-align: center; font-size: .72rem; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); margin-bottom: 14px; }
+
+  /* ── active-lendings history table ── */
+  .history-section { margin-top: 36px; }
+  .history-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 14px;
+  }
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .history-table th {
+    background: var(--ink);
+    color: var(--gold);
+    text-align: left;
+    padding: 10px 14px;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .9px;
+    font-weight: 600;
+  }
+  .history-table td { padding: 10px 14px; border-bottom: 1px solid var(--cream); color: var(--ink); }
+  .history-table tr:last-child td { border-bottom: none; }
+  .history-table tr:hover td { background: var(--paper); }
+  .overdue { color: var(--rust); font-weight: 600; }
+
+  /* ── Mark Returned button inside the table ── */
+  .btn-return {
+    background: #1a7f4b;
+    color: #fff;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: .76rem;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-return:hover { opacity: .85; }
+</style>
+
+<header>
+  <h1>📚 Denis Library System</h1>
+  <span>Lend a Book</span>
+</header>
+
+<main>
+
+  {% if messages %}
+    {% for msg in messages %}<div class="toast">✓ {{ msg }}</div>{% endfor %}
+  {% endif %}
+
+  <div class="section-header" style="margin-bottom:20px;">
+    <h2>Lend: {{ book.title }}</h2>
+    <a href="{% url 'LendingCatalogue' %}"
+       style="margin-left:auto; text-decoration:none; color:var(--muted); font-size:.88rem;">
+      ← Back to Catalogue
+    </a>
+  </div>
+
+  <div class="lend-layout">
+
+    <!-- LEFT: Lending form -->
+    <div class="form-card" style="margin-bottom:0;">
+      <h2><span class="icon">📤</span> Lending Form</h2>
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+
+          <!-- Borrower name -->
+          <div class="full">
+            <label for="{{ form.borrower_name.id_for_label }}">Borrower's Full Name</label>
+            {{ form.borrower_name }}
+            {{ form.borrower_name.errors }}
+          </div>
+
+          <!-- Copies to lend -->
+          <div>
+            <label for="{{ form.copies_lent.id_for_label }}">
+              Copies to Lend
+              <span style="font-weight:300;text-transform:none;letter-spacing:0">
+                (max {{ book.copies_available }})
+              </span>
+            </label>
+            {{ form.copies_lent }}
+            {{ form.copies_lent.errors }}
+          </div>
+
+          <!-- Due date -->
+          <div>
+            <label for="{{ form.due_date.id_for_label }}">Return Due Date</label>
+            {{ form.due_date }}
+            {{ form.due_date.errors }}
+          </div>
+
+        </div>
+
+        <!-- Read-only info rows shown inside the form for reference -->
+        <div style="margin-top:20px; padding:14px 16px; background:var(--paper);
+                    border:1px solid var(--border); border-radius:var(--radius);">
+          <div style="font-size:.72rem; text-transform:uppercase; letter-spacing:.9px;
+                      color:var(--muted); margin-bottom:8px;">Lending Summary (auto-calculated)</div>
+          <div style="display:flex; gap:24px; flex-wrap:wrap; font-size:.88rem;">
+            <span>📅 <strong>Borrowed:</strong> today</span>
+            <span>📚 <strong>Copies Available:</strong> {{ book.copies_available }}</span>
+            <span>📖 <strong>ISBN:</strong> {{ book.isbn }}</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">✅ Confirm Lending</button>
+          <a href="{% url 'LendingCatalogue' %}"
+             style="display:inline-flex;align-items:center;padding:12px 22px;
+                    border-radius:var(--radius);text-decoration:none;
+                    border:1.5px solid var(--border);color:var(--muted);font-size:.95rem;">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- RIGHT: Book info panel -->
+    <div class="book-info-panel">
+      <h3>📖 Book Details</h3>
+
+      <div class="copies-big">{{ book.copies_available }}</div>
+      <div class="copies-label">Copies Available Right Now</div>
+
+      <div class="info-row">
+        <span class="lbl">Title</span>
+        <span class="val">{{ book.title }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Author</span>
+        <span class="val">{{ book.author }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Genre</span>
+        <span class="val">{{ book.get_genre_display }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">ISBN</span>
+        <span class="val">{{ book.isbn }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Published</span>
+        <span class="val">{{ book.published_year }}</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">Currently On Loan</span>
+        <span class="val">{{ active_lendings.count }} record{{ active_lendings.count|pluralize }}</span>
+      </div>
+    </div>
+
+  </div><!-- end .lend-layout -->
+
+
+  <!-- Active lending records for this book -->
+  {% if active_lendings %}
+    <div class="history-section">
+      <h3>📋 Currently On Loan — {{ book.title }}</h3>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Borrower</th>
+            <th>Copies Lent</th>
+            <th>Date Borrowed</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in active_lendings %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ record.borrower_name }}</td>
+              <td>{{ record.copies_lent }}</td>
+              <td>{{ record.date_borrowed|date:"d M Y, H:i" }}</td>
+              <td>
+                {% if record.due_date < today %}
+                  <span class="overdue">{{ record.due_date|date:"d M Y" }} ⚠ Overdue</span>
+                {% else %}
+                  {{ record.due_date|date:"d M Y" }}
+                {% endif %}
+              </td>
+              <td>
+                {% if record.due_date < today %}
+                  <span class="overdue">Overdue</span>
+                {% else %}
+                  On Loan
+                {% endif %}
+              </td>
+              <td>
+                <!-- Mark as returned — POST-only for safety -->
+                <form method="POST" action="{% url 'MarkReturned' record.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-return">✔ Returned</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+</main>
+
+{% now "Y-m-d" as today %}
+{% endblock %}

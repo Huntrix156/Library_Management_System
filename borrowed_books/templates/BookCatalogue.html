@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book Catalogue{% endblock %}
+{% block content %}
+
+<style>
+  /* ── CRUD button row on each card ── */
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--cream);
+  }
+  .btn-view, .btn-edit, .btn-del {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 7px;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .4px;
+    text-decoration: none;
+    transition: opacity .15s, transform .1s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-view { background: var(--cream);  color: var(--ink); }
+  .btn-edit { background: var(--gold);   color: #fff; }
+  .btn-del  { background: var(--rust);   color: #fff; }
+  .btn-view:hover, .btn-edit:hover, .btn-del:hover { opacity: .85; transform: scale(.97); }
+
+
+
+  .book-grid {
+  display: grid;
+
+  /* repeat(4, 1fr) = make 4 equal columns
+     1fr = "1 fraction" of the total available width
+     So each column is exactly 25% of the container */
+  grid-template-columns: repeat(4, 1fr);
+
+  /* 22px gap between every card — works both horizontally and vertically */
+  gap: 22px;
+}
+
+</style>
+
+<header>
+  <h1>📚 Denis Library System</h1>
+  <span>Book Catalogue</span>
+</header>
+
+<main>
+
+<form method="GET" action="{% url 'BookCatalogue' %}">
+  <input type="search" name="q" value="{{ query }}" placeholder="Search by title or author…" />
+  <button type="submit">Search</button>
+  {% if query %}
+    <a href="{% url 'BookCatalogue' %}">✕ Clear</a>
+  {% endif %}
+</form>
+
+{% if query %}
+  <p>Showing {{ books.count }} result(s) for "<em>{{ query }}</em>"</p>
+{% endif %}
+  <div class="section-header">
+    <h2>Book Catalogue</h2>
+    <span class="count">{{ books.count }} book{{ books.count|pluralize }}</span>
+    <a href="{% url 'Addbook' %}" class="btn-primary" style="margin-left:auto">+ Add Book</a>
+  </div>
+
+    {% if messages %}
+    {% for msg in messages %}
+      <div class="toast">✓ {{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+
+
+  {% if books %}
+<!--    <div class="lazy-row-wrapper">-->
+<!--      <div class="lazy-row">-->
+
+  <div class="book-grid">
+        {% for book in books %}
+          <div class="book-card">
+            <div class="card-spine genre-{{ book.genre }}"></div>
+            <div class="card-genre">{{ book.get_genre_display }}</div>
+            <div class="card-title">{{ book.title }}</div>
+            <div class="card-author">{{ book.author }}</div>
+            {% if book.description %}
+              <div class="card-desc">{{ book.description }}</div>
+            {% endif %}
+            <div class="card-meta">
+              <span class="card-year">{{ book.published_year }}</span>
+              <span class="card-copies {% if book.copies_available <= 2 %}low{% endif %}">
+                {{ book.copies_available }} cop{{ book.copies_available|pluralize:"y,ies" }}
+              </span>
+            </div>
+
+            {# ── Per-card CRUD actions ── #}
+            <div class="card-actions">
+              {# READ detail #}
+              <a href="{% url 'BookDetail' book.pk %}" class="btn-view">👁 View</a>
+              {# UPDATE #}
+              <a href="{% url 'EditBook' book.pk %}" class="btn-edit">✏️ Edit</a>
+              {# DELETE #}
+              <a href="{% url 'DeleteBook' book.pk %}" class="btn-del">🗑 Delete</a>
+            </div>
+
+
+
+
+
+
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477
+             5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0
+             3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <p>No books yet — <a href="{% url 'Addbook' %}">add your first one</a>!</p>
+    </div>
+  {% endif %}
+
+</main>
+
+{% endblock %}

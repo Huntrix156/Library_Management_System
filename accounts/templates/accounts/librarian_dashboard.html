@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .db-header { margin-bottom:32px; }
+  .db-header h2 { font-family:'Playfair Display',serif; font-size:1.8rem; margin-bottom:4px; }
+  .db-header p  { color:var(--muted); font-size:.95rem; }
+  .role-tag { display:inline-block; background:#fff3cd; color:#856404; font-size:.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:14px; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:40px; }
+  .stat-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow); }
+  .stat-card .label { font-size:.72rem; font-weight:600; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .stat-card .value { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--ink); line-height:1; }
+  .stat-card .value.rust { color:var(--rust); }
+  .stat-card .value.gold { color:var(--gold); }
+
+  .action-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:36px; }
+  .action-btn { display:block; background:var(--rust); color:#fff; text-align:center; padding:14px 20px; border-radius:var(--radius); text-decoration:none; font-weight:500; font-size:.92rem; transition:background .2s; }
+  .action-btn:hover { background:var(--rust-lt); color:#fff; }
+  .action-btn.secondary { background:var(--ink); }
+  .action-btn.secondary:hover { background:#2c2a28; color:#fff; }
+
+  .section-block { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:28px; box-shadow:var(--shadow); margin-bottom:28px; }
+  .section-block h3 { font-family:'Playfair Display',serif; font-size:1.15rem; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--cream); }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; }
+  th { text-align:left; font-size:.7rem; font-weight:600; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); padding:0 12px 10px 0; border-bottom:1px solid var(--cream); }
+  td { padding:10px 12px 10px 0; border-bottom:1px solid var(--cream); color:var(--ink); }
+  tr:last-child td { border-bottom:none; }
+  .badge { font-size:.68rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+  .badge-overdue { background:#fdecea; color:var(--rust); }
+  .badge-active  { background:#d4edda; color:#155724; }
+</style>
+
+<span class="role-tag">Librarian Dashboard</span>
+<div class="db-header">
+  <h2>Hello, {{ request.user.first_name|default:request.user.username }}</h2>
+  <p>Manage lending, returns and the book catalogue.</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="label">Total Books</div>
+    <div class="value">{{ total_books }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Copies Available</div>
+    <div class="value gold">{{ total_copies }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Active Lendings</div>
+    <div class="value rust">{{ active_lendings }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Overdue</div>
+    <div class="value rust">{{ overdue }}</div>
+  </div>
+</div>
+
+<div class="action-grid">
+  <a href="{% url 'LendingCatalogue' %}" class="action-btn">Lend a Book</a>
+  <a href="{% url 'ActiveLendings' %}"   class="action-btn secondary">Active Lendings</a>
+  <a href="{% url 'Addbook' %}"          class="action-btn secondary">+ Add Book</a>
+  <a href="{% url 'BookCatalogue' %}"    class="action-btn secondary">Book Catalogue</a>
+</div>
+
+<div class="section-block">
+  <h3>Recent Active Lendings</h3>
+  {% if recent_lendings %}
+    <table>
+      <thead><tr><th>Book</th><th>Borrower</th><th>Copies</th><th>Due Date</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for r in recent_lendings %}
+        <tr>
+          <td>{{ r.book.title }}</td>
+          <td>{{ r.borrower_name }}</td>
+          <td>{{ r.copies_lent }}</td>
+          <td>{{ r.due_date }}</td>
+          <td>
+            {% if r.due_date < today %}<span class="badge badge-overdue">Overdue</span>
+            {% else %}<span class="badge badge-active">Active</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p style="color:var(--muted);font-size:.9rem;">No active lendings right now.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,210 @@
+
+
+
+
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Denis Library</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+    :root {
+      --ink:      #12100e;
+      --paper:    #faf7f2;
+      --cream:    #f0ebe2;
+      --rust:     #c0392b;
+      --rust-lt:  #e74c3c;
+      --gold:     #d4a843;
+      --muted:    #7a7067;
+      --border:   #ddd5c8;
+      --radius:   10px;
+      --shadow:   0 4px 24px rgba(18,16,14,.10);
+      --card-w:   240px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: radial-gradient(ellipse at top right, rgba(212,168,67,0.18) 0%, transparent 60%),
+                  linear-gradient(160deg, #faf7f2 0%, #f0e8df 100%);
+      background-attachment: fixed;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    main { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* form card */
+    .form-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:36px 40px; box-shadow:var(--shadow); margin-bottom:60px; }
+    .form-card h2 { font-family:'Playfair Display',serif; font-size:1.45rem; margin-bottom:28px; padding-bottom:14px; border-bottom:2px solid var(--cream); display:flex; align-items:center; gap:10px; }
+    .form-card h2 .icon { width:30px;height:30px;background:var(--rust);border-radius:6px;display:grid;place-items:center;font-size:14px;color:#fff; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
+    .form-grid .full { grid-column:1/-1; }
+    label { display:block; font-size:.78rem; font-weight:500; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    input, select, textarea { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.95rem; background:var(--paper); color:var(--ink); transition:border-color .2s,box-shadow .2s; outline:none; }
+    input:focus, select:focus, textarea:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(192,57,43,.12); background:#fff; }
+    textarea { resize:vertical; min-height:80px; }
+    .errorlist { color:var(--rust-lt); font-size:.82rem; margin-top:4px; list-style:none; }
+    .form-actions { margin-top:26px; display:flex; gap:12px; }
+    .btn-primary { background:var(--rust); color:#fff; border:none; padding:12px 30px; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:500; cursor:pointer; transition:background .2s,transform .1s; }
+    .btn-primary:hover { background:var(--rust-lt); }
+    .btn-secondary { background:transparent; color:var(--muted); border:1.5px solid var(--border); padding:12px 22px; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.95rem; cursor:pointer; transition:border-color .2s,color .2s; text-decoration:none; display:inline-block; }
+    .btn-secondary:hover { border-color:var(--muted); color:var(--ink); }
+
+    /* toast */
+    .toast { background:#1a7f4b; color:#fff; padding:12px 20px; border-radius:var(--radius); font-size:.9rem; margin-bottom:20px; display:flex; align-items:center; gap:8px; animation:slideIn .3s ease; }
+    @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+
+    /* section header */
+    .section-header { display:flex; align-items:baseline; gap:12px; margin-bottom:22px; }
+    .section-header h2 { font-family:'Playfair Display',serif; font-size:1.45rem; }
+    .section-header .count { background:var(--ink); color:var(--gold); font-size:.75rem; font-weight:700; letter-spacing:1px; padding:3px 10px; border-radius:20px; }
+
+    /* lazy row */
+    .lazy-row-wrapper { position:relative; }
+    .lazy-row-wrapper::after { content:''; position:absolute; top:0; right:0; width:60px; height:100%; background:linear-gradient(to right,transparent,var(--paper)); pointer-events:none; border-radius:0 var(--radius) var(--radius) 0; }
+    .lazy-row { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:14px; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+    .lazy-row::-webkit-scrollbar { height:5px; }
+    .lazy-row::-webkit-scrollbar-track { background:transparent; }
+    .lazy-row::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+    /* book card */
+    .book-card { flex:0 0 var(--card-w); scroll-snap-align:start; background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:20px 18px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px; transition:transform .2s,box-shadow .2s; animation:cardIn .4s ease both; }
+    .book-card:nth-child(1){animation-delay:.05s} .book-card:nth-child(2){animation-delay:.10s} .book-card:nth-child(3){animation-delay:.15s} .book-card:nth-child(4){animation-delay:.20s} .book-card:nth-child(5){animation-delay:.25s} .book-card:nth-child(n+6){animation-delay:.30s}
+    @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    .book-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(18,16,14,.15); }
+    .card-spine { height:4px; border-radius:3px; margin-bottom:4px; }
+    .genre-fiction{background:#3498db} .genre-non_fiction{background:#2ecc71} .genre-science{background:#9b59b6} .genre-history{background:#e67e22} .genre-biography{background:#1abc9c} .genre-technology{background:#2980b9} .genre-arts{background:#e91e8c} .genre-other{background:var(--gold)}
+    .card-genre  { font-size:.68rem; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); }
+    .card-title  { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .card-author { font-size:.82rem; color:var(--muted); font-style:italic; }
+    .card-desc   { font-size:.8rem; color:#555; line-height:1.45; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
+    .card-meta   { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px; border-top:1px solid var(--cream); }
+    .card-year   { font-size:.78rem; color:var(--muted); }
+    .card-copies { font-size:.75rem; font-weight:600; padding:3px 9px; border-radius:20px; background:var(--cream); color:var(--ink); }
+    .card-copies.low { background:#fdecea; color:var(--rust); }
+
+    /* empty state */
+    .empty-state { text-align:center; padding:48px 24px; color:var(--muted); border:2px dashed var(--border); border-radius:var(--radius); }
+
+    @media (max-width:600px) {
+      header { padding:20px; }
+      main   { padding:28px 16px 60px; }
+      .form-card { padding:24px 20px; }
+      .form-grid { grid-template-columns:1fr; }
+      .form-grid .full { grid-column:1; }
+      :root { --card-w:200px; }
+    }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+      <img src="{% static 'image/22a15976f2a206610b2c127e867164bd.jpg' %}" alt="Denis Library Logo" height="36" style="object-fit:contain;">
+      <span style="font-family:'Playfair Display',serif;font-weight:700;">Denis Library</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">Home</a>
+        </li>
+
+        {% if user.is_authenticated %}
+
+          {# ── Links visible to Admin + Librarian only ── #}
+          {% if user.role == 'admin' or user.role == 'librarian' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'BookCatalogue' %}">Book Catalogue</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'LendingCatalogue' %}">Lend a Book</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'ActiveLendings' %}">Active Lendings</a></li>
+          {% endif %}
+
+          {# ── Admin-only link ── #}
+          {% if user.role == 'admin' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'Addbook' %}">Add Book</a></li>
+          {% endif %}
+
+          {# ── Payment — admin + librarian ── #}
+          {% if user.role == 'admin' or user.role == 'librarian' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'payment' %}">Payment</a></li>
+          {% endif %}
+
+          {# ── Dashboard link for all roles ── #}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard_redirect' %}">Dashboard</a>
+          </li>
+
+        {% endif %}
+
+      </ul>
+
+      {# ── Auth buttons (right side) ── #}
+      <div class="d-flex align-items-center gap-2">
+        {% if user.is_authenticated %}
+          <span class="navbar-text me-2" style="font-size:.85rem;color:var(--muted);">
+            {{ user.username }}
+            <span style="background:var(--cream);color:var(--muted);font-size:.65rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-left:4px;">{{ user.get_role_display }}</span>
+          </span>
+          <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-secondary">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}"    class="btn btn-sm btn-outline-secondary">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-sm" style="background:var(--rust);color:#fff;border:none;">Register</a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<main>
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="toast">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+
+  {% block content %}
+
+
+  {% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

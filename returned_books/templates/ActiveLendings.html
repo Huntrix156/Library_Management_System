@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Active Lendings{% endblock %}
+{% block content %}
+
+<style>
+  main { max-width: 1100px; }
+
+  .lending-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: .87rem;
+  }
+  .lending-table th {
+    background: var(--ink);
+    color: var(--gold);
+    text-align: left;
+    padding: 12px 16px;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .9px;
+    font-weight: 600;
+  }
+  .lending-table td { padding: 12px 16px; border-bottom: 1px solid var(--cream); color: var(--ink); vertical-align: middle; }
+  .lending-table tr:last-child td { border-bottom: none; }
+  .lending-table tr:hover td { background: var(--paper); }
+
+  .badge-overdue { background:#fdecea; color:var(--rust); padding:3px 9px; border-radius:20px; font-size:.72rem; font-weight:700; }
+  .badge-ok      { background:#e6f4ee; color:#1a7f4b;    padding:3px 9px; border-radius:20px; font-size:.72rem; font-weight:700; }
+
+  .btn-return {
+    background: #1a7f4b;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: .78rem;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .btn-return:hover { opacity: .85; }
+
+  .copies-pill {
+    display: inline-block;
+    background: var(--cream);
+    color: var(--ink);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 600;
+  }
+</style>
+
+<header>
+  <h1>📚 Denis Library System</h1>
+  <span>Active Lendings</span>
+</header>
+
+<main>
+
+  {% if messages %}
+    {% for msg in messages %}<div class="toast">✓ {{ msg }}</div>{% endfor %}
+  {% endif %}
+
+  <div class="section-header">
+    <h2>Active Lendings</h2>
+    <span class="count">{{ records.count }} record{{ records.count|pluralize }}</span>
+    <a href="{% url 'LendingCatalogue' %}"
+       style="margin-left:auto; text-decoration:none; color:var(--muted); font-size:.88rem;">
+      ← Back to Catalogue
+    </a>
+  </div>
+
+  {% if records %}
+    <table class="lending-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Book</th>
+          <th>Borrower</th>
+          <th>Copies Lent</th>
+          <th>Copies Left in Catalogue</th>
+          <th>Date Borrowed</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <strong>{{ record.book.title }}</strong><br>
+              <span style="font-size:.78rem;color:var(--muted);font-style:italic;">{{ record.book.author }}</span>
+            </td>
+            <td>{{ record.borrower_name }}</td>
+            <td><span class="copies-pill">{{ record.copies_lent }}</span></td>
+            <td>
+              <!-- Live copies still available in the catalogue for this book -->
+              {% if record.book.copies_available == 0 %}
+                <span style="color:var(--rust); font-weight:600;">0 — Out of Stock</span>
+              {% elif record.book.copies_available <= 2 %}
+                <span style="color:var(--gold); font-weight:600;">{{ record.book.copies_available }} low</span>
+              {% else %}
+                <span style="color:#1a7f4b; font-weight:600;">{{ record.book.copies_available }}</span>
+              {% endif %}
+            </td>
+            <td>{{ record.date_borrowed|date:"d M Y" }}</td>
+            <td>
+              {% if record.due_date < today %}
+                <span class="badge-overdue">{{ record.due_date|date:"d M Y" }} Overdue</span>
+              {% else %}
+                {{ record.due_date|date:"d M Y" }}
+              {% endif %}
+            </td>
+            <td>
+              {% if record.due_date < today %}
+                <span class="badge-overdue">⚠ Overdue</span>
+              {% else %}
+                <span class="badge-ok">On Loan</span>
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{% url 'MarkReturned' record.pk %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-return">✔ Mark Returned</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty-state">
+      <p>No active lendings right now. <a href="{% url 'LendingCatalogue' %}">Lend a book</a>.</p>
+    </div>
+  {% endif %}
+
+</main>
+{% endblock %}

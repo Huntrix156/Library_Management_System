@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .auth-wrap { max-width: 520px; margin: 56px auto 80px; }
+  .auth-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:40px 44px; box-shadow:var(--shadow); }
+  .auth-card h2 { font-family:'Playfair Display',serif; font-size:1.55rem; margin-bottom:6px; }
+  .auth-card .sub { color:var(--muted); font-size:.9rem; margin-bottom:28px; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:.75rem; font-weight:500; letter-spacing:.8px; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .form-input, .field input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.95rem; background:var(--paper); color:var(--ink); transition:border-color .2s,box-shadow .2s; outline:none; }
+  .form-input:focus, .field input:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(192,57,43,.12); background:#fff; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .errorlist { color:var(--rust-lt); font-size:.8rem; margin-top:4px; list-style:none; padding:0; }
+  .btn-auth { width:100%; background:var(--rust); color:#fff; border:none; padding:13px; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; cursor:pointer; margin-top:8px; transition:background .2s; }
+  .btn-auth:hover { background:var(--rust-lt); }
+  .auth-footer { text-align:center; margin-top:20px; font-size:.88rem; color:var(--muted); }
+  .auth-footer a { color:var(--rust); text-decoration:none; font-weight:500; }
+  .role-badge { display:inline-block; background:var(--cream); color:var(--muted); font-size:.72rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:22px; }
+</style>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <span class="role-badge">New Account</span>
+    <h2>Join Denis Library</h2>
+    <p class="sub">Create your member account to browse the catalogue.</p>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="toast">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      <div class="field-row">
+        <div class="field">
+          <label for="{{ form.first_name.id_for_label }}">First name</label>
+          {{ form.first_name }}
+          {{ form.first_name.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.last_name.id_for_label }}">Last name</label>
+          {{ form.last_name }}
+          {{ form.last_name.errors }}
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.email.id_for_label }}">Email address</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+
+      <button type="submit" class="btn-auth">Create Account</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

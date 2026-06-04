@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<h1>Returned Books</h1>
+
+<table border="1">
+    <tr>
+        <th>Book</th>
+        <th>Borrower</th>
+        <th>Return Date</th>
+    </tr>
+
+    {% for returned in returned_books %}
+    <tr>
+        <td>{{ returned.book }}</td>
+        <td>{{ returned.borrower_name }}</td>
+        <td>{{ returned.return_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+</body>
+</html>

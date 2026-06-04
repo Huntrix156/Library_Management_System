@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .db-header { margin-bottom:32px; }
+  .db-header h2 { font-family:'Playfair Display',serif; font-size:1.8rem; margin-bottom:4px; }
+  .db-header p  { color:var(--muted); font-size:.95rem; }
+  .role-tag { display:inline-block; background:#d1ecf1; color:#0c5460; font-size:.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:14px; }
+
+  .info-banner { background:var(--cream); border-left:4px solid var(--gold); border-radius:0 var(--radius) var(--radius) 0; padding:14px 18px; margin-bottom:32px; font-size:.9rem; color:var(--muted); }
+  .info-banner strong { color:var(--ink); }
+
+  .section-header { display:flex; align-items:baseline; gap:12px; margin-bottom:22px; }
+  .section-header h3 { font-family:'Playfair Display',serif; font-size:1.3rem; }
+  .count { background:var(--ink); color:var(--gold); font-size:.72rem; font-weight:700; letter-spacing:1px; padding:3px 10px; border-radius:20px; }
+
+  .lazy-row-wrapper { position:relative; }
+  .lazy-row-wrapper::after { content:''; position:absolute; top:0; right:0; width:60px; height:100%; background:linear-gradient(to right,transparent,var(--paper)); pointer-events:none; }
+  .lazy-row { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:14px; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+  .lazy-row::-webkit-scrollbar { height:5px; }
+  .lazy-row::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+  .book-card { flex:0 0 220px; scroll-snap-align:start; background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:20px 18px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px; transition:transform .2s,box-shadow .2s; animation:cardIn .4s ease both; }
+  .book-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(18,16,14,.15); }
+  @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+  .card-spine { height:4px; border-radius:3px; margin-bottom:4px; }
+  .genre-fiction      { background:#3498db; }
+  .genre-non_fiction  { background:#2ecc71; }
+  .genre-science      { background:#9b59b6; }
+  .genre-history      { background:#e67e22; }
+  .genre-biography    { background:#1abc9c; }
+  .genre-technology   { background:#2980b9; }
+  .genre-arts         { background:#e91e8c; }
+  .genre-other        { background:var(--gold); }
+
+  .card-genre  { font-size:.67rem; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); }
+  .card-title  { font-family:'Playfair Display',serif; font-size:.98rem; font-weight:700; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .card-author { font-size:.8rem; color:var(--muted); font-style:italic; }
+  .card-meta   { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px; border-top:1px solid var(--cream); }
+  .card-copies { font-size:.73rem; font-weight:600; padding:3px 9px; border-radius:20px; background:var(--cream); color:var(--ink); }
+</style>
+
+<span class="role-tag">Member</span>
+<div class="db-header">
+  <h2>Welcome, {{ request.user.first_name|default:request.user.username }}</h2>
+  <p>Browse books available for borrowing at Denis Library.</p>
+</div>
+
+<div class="info-banner">
+  <strong>How to borrow a book:</strong> Visit the library desk and ask the librarian to lend you any of the titles below.
+</div>
+
+<div class="section-header">
+  <h3>Books Available Now</h3>
+  <span class="count">{{ books|length }}</span>
+</div>
+
+{% if books %}
+  <div class="lazy-row-wrapper">
+    <div class="lazy-row">
+      {% for book in books %}
+      <div class="book-card">
+        <div class="card-spine genre-{{ book.genre }}"></div>
+        <div class="card-genre">{{ book.get_genre_display }}</div>
+        <div class="card-title">{{ book.title }}</div>
+        <div class="card-author">{{ book.author }}</div>
+        <div class="card-meta">
+          <span class="card-copies">{{ book.copies_available }} cop{{ book.copies_available|pluralize:"y,ies" }} left</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>No books are currently available. Please check back soon.</p>
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+
+<style>
+  .detail-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    box-shadow: var(--shadow);
+    max-width: 680px;
+  }
+  .detail-spine {
+    height: 5px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .detail-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+  }
+  .detail-author { color: var(--muted); font-style: italic; margin-bottom: 20px; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+    margin-bottom: 20px;
+  }
+  .detail-field label {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .9px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .detail-field span { font-size: .95rem; color: var(--ink); }
+  .detail-desc {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .9rem;
+    color: #444;
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+  .detail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-back {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    padding: 11px 22px;
+    border-radius: var(--radius);
+    font-size: .9rem;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-back:hover { border-color: var(--muted); color: var(--ink); }
+  .btn-edit-lg {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 11px 26px;
+    border-radius: var(--radius);
+    font-size: .9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .btn-edit-lg:hover { opacity: .85; }
+  .btn-del-lg {
+    background: var(--rust);
+    color: #fff;
+    border: none;
+    padding: 11px 26px;
+    border-radius: var(--radius);
+    font-size: .9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .btn-del-lg:hover { opacity: .85; }
+</style>
+
+<main>
+  <div class="detail-card">
+    <div class="detail-spine genre-{{ book.genre }}"></div>
+
+    <h2>{{ book.title }}</h2>
+    <p class="detail-author">by {{ book.author }}</p>
+
+    <div class="detail-grid">
+      <div class="detail-field">
+        <label>ISBN</label>
+        <span>{{ book.isbn }}</span>
+      </div>
+      <div class="detail-field">
+        <label>Genre</label>
+        <span>{{ book.get_genre_display }}</span>
+      </div>
+      <div class="detail-field">
+        <label>Published Year</label>
+        <span>{{ book.published_year }}</span>
+      </div>
+      <div class="detail-field">
+        <label>Copies Available</label>
+        <span>{{ book.copies_available }}</span>
+      </div>
+    </div>
+
+    {% if book.description %}
+      <div class="detail-desc">{{ book.description }}</div>
+    {% endif %}
+
+    <div class="detail-actions">
+      {# Back to list — READ #}
+      <a href="{% url 'BookCatalogue' %}" class="btn-back">← Back to Catalogue</a>
+      {# UPDATE #}
+      <a href="{% url 'EditBook' book.pk %}" class="btn-edit-lg">✏️ Edit Book</a>
+      {# DELETE #}
+      <a href="{% url 'DeleteBook' book.pk %}" class="btn-del-lg">🗑 Delete Book</a>
+    </div>
+  </div>
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

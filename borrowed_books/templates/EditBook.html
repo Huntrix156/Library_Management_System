@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Edit {{ book.title }}{% endblock %}
+{% block content %}
+
+<main>
+  <div class="form-card" style="max-width:680px;">
+    <h2>
+      <span class="icon">✏️</span>
+      Edit Book
+    </h2>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="toast">✓ {{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+      <div class="form-grid">
+
+        <div>
+          <label for="{{ form.title.id_for_label }}">Title</label>
+          {{ form.title }}
+          {{ form.title.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.author.id_for_label }}">Author</label>
+          {{ form.author }}
+          {{ form.author.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.isbn.id_for_label }}">ISBN</label>
+          {{ form.isbn }}
+          {{ form.isbn.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.genre.id_for_label }}">Genre</label>
+          {{ form.genre }}
+          {{ form.genre.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.published_year.id_for_label }}">Published Year</label>
+          {{ form.published_year }}
+          {{ form.published_year.errors }}
+        </div>
+
+        <div>
+          <label for="{{ form.copies_available.id_for_label }}">Copies Available</label>
+          {{ form.copies_available }}
+          {{ form.copies_available.errors }}
+        </div>
+
+        <div class="full">
+          <label for="{{ form.description.id_for_label }}">Description <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        {# UPDATE submit #}
+        <button type="submit" class="btn-primary">💾 Save Changes</button>
+        {# Cancel — back to detail #}
+        <a href="{% url 'BookDetail' book.pk %}" class="btn-secondary" style="display:inline-flex;align-items:center;padding:12px 22px;border-radius:var(--radius);text-decoration:none;border:1.5px solid var(--border);color:var(--muted);font-size:.95rem;">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock %}
