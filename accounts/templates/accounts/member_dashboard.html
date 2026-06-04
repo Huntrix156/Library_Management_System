@@ -56,9 +56,20 @@
   <span class="count">{{ books|length }}</span>
 </div>
 
+
+
+<style>
+  .book_grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:22px;
+  }
+</style>
+
 {% if books %}
-  <div class="lazy-row-wrapper">
-    <div class="lazy-row">
+<div class="book_grid">
+<!--  <div class="lazy-row-wrapper">-->
+<!--    <div class="lazy-row">-->
       {% for book in books %}
       <div class="book-card">
         <div class="card-spine genre-{{ book.genre }}"></div>
